@@ -25,6 +25,8 @@ const getMyDriverProfile = async function (req, res, next) {
                     phone: user.phone,
                     avatar: user.avatar,
                     role: user.role,
+                    gender: req.user.gender,
+                    city: req.user.city,
                     isVerified: user.isVerified,
                 },
                 driverProfile: profile

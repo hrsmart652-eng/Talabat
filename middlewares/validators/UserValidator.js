@@ -18,6 +18,7 @@ class UserValidator extends BaseValidator {
                 .optional()
                 .isEmail().withMessage("Must be a valid email")
                 .custom(async (value, { req }) => {
+
                     const existing = await User.findOne({ email: value });
 
                     if (existing && existing._id.toString() !== req.user._id.toString()) {
@@ -30,6 +31,15 @@ class UserValidator extends BaseValidator {
             body("phone")
                 .optional()
                 .isString().withMessage("Phone must be a string"),
+
+            body("gender")
+                .optional()
+                .isIn(["male", "female"]).withMessage("Gender must be male or female"),
+
+            body("city")
+                .optional()
+                .isString().withMessage("City must be a string")
+                .isLength({ min: 2 }).withMessage("City must be at least 2 characters"),
         ]);
     }
 

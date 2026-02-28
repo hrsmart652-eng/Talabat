@@ -40,6 +40,14 @@ const userSchema = new mongoose.Schema(
       enum: ["customer", "driver", "admin"],
       default: "customer",
     },
+    gender: {
+      type: String,
+      enum: ["male", "female"]
+    },
+
+    city: {
+      type: String
+    },
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: false },

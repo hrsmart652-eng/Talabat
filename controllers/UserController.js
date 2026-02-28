@@ -15,6 +15,8 @@ const getProfile = async function (req, res, next) {
             phone: req.user.phone,
             avatar: req.user.avatar,
             role: req.user.role,
+            gender: req.user.gender,
+            city: req.user.city,
             isVerified: req.user.isVerified
         };
 
@@ -41,7 +43,13 @@ const updateProfile = async function (req, res, next) {
                 .json(Jsend.fail({ password: "Password is incorrect" }));
         }
 
-        const allowedFields = ['name', 'email', 'phone'];
+        const allowedFields = [
+            'name',
+            'email',
+            'phone',
+            'gender',
+            'city'
+        ];
 
         allowedFields.forEach(field => {
             if (req.body[field] !== undefined) {
@@ -58,6 +66,8 @@ const updateProfile = async function (req, res, next) {
                     name: user.name,
                     email: user.email,
                     phone: user.phone,
+                    gender: user.gender,
+                    city: user.city,
                     role: user.role,
                     isVerified: user.isVerified
                 }
@@ -68,7 +78,6 @@ const updateProfile = async function (req, res, next) {
         next(error);
     }
 };
-
 
 const updatePassword = async function (req, res, next) {
     try {
