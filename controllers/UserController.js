@@ -211,6 +211,61 @@ const updateAvatar = async function (req, res, next) {
         next(error);
     }
 };
+
+const viewUserProfile = async function (req, res, next) {
+    try {
+
+        const { id } = req.params;
+
+        const user = await User.findById(id).select("-password");
+
+        if (!user) {
+            return res.status(Constants.STATUSCODE.NOT_FOUND).json(
+                Jsend.fail({
+                    message: "User not found"
+                })
+            );
+        }
+
+        return res.status(Constants.STATUSCODE.SUCCESS).json(
+            Jsend.success({
+                user
+            })
+        );
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+const deleteUser = async function (req, res, next) {
+    try {
+
+        const { id } = req.params;
+
+        const user = await User.findByIdAndDelete(id);
+
+        if (!user) {
+            return res.status(Constants.STATUSCODE.NOT_FOUND).json({
+                status: "fail",
+                message: "User not found"
+            });
+        }
+
+        return res.status(Constants.STATUSCODE.SUCCESS).json({
+            status: "success",
+            message: "User deleted successfully"
+        });
+
+    } catch (error) {
+        return res.status(Constants.STATUSCODE.SERVER_ERROR).json({
+            status: "error",
+            message: error.message
+        });
+    }
+};
+
+
 module.exports = {
     getProfile,
     updateProfile,
@@ -218,4 +273,6 @@ module.exports = {
     updateUserRole,
     getUsers,
     updateAvatar,
+    viewUserProfile,
+    deleteUser,
 };
