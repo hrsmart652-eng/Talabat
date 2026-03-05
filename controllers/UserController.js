@@ -243,7 +243,7 @@ const deleteUser = async function (req, res, next) {
 
         const { id } = req.params;
 
-        const user = await User.findByIdAndDelete(id);
+        const user = await User.findById(id);
 
         if (!user) {
             return res.status(Constants.STATUSCODE.NOT_FOUND).json({
@@ -252,19 +252,23 @@ const deleteUser = async function (req, res, next) {
             });
         }
 
+        // delete avatar if exists
+        if (user.avatar) {
+            const avatarPath = path.join("uploads", "avatars", user.avatar);
+            deleteFile(avatarPath);
+        }
+
+        await User.findByIdAndDelete(id);
+
         return res.status(Constants.STATUSCODE.SUCCESS).json({
             status: "success",
             message: "User deleted successfully"
         });
 
     } catch (error) {
-        return res.status(Constants.STATUSCODE.SERVER_ERROR).json({
-            status: "error",
-            message: error.message
-        });
+        next(error);
     }
 };
-
 
 module.exports = {
     getProfile,
