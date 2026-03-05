@@ -8,6 +8,7 @@ var authRouter = require("./routes/auth");
 var userRouter = require("./routes/users");
 var driverRouter = require("./routes/drivers");
 var addressRoutes = require("./routes/address");
+var restaurantRouter = require("./routes/restaurants");
 
 var app = express();
 
@@ -18,6 +19,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 app.use('/api/drivers', driverRouter);
 app.use("/api/addresses", addressRoutes);
+app.use("/api/restaurants", restaurantRouter);
 
 app.use(ErrorHandler);
 
