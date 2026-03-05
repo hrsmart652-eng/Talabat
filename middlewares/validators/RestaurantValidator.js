@@ -1,5 +1,6 @@
 const BaseValidator = require("./baseValidator");
 const { body, param, query } = require("express-validator");
+const path = require("path");
 
 class RestaurantValidator extends BaseValidator {
 
@@ -13,13 +14,29 @@ class RestaurantValidator extends BaseValidator {
                 .optional()
                 .isString().withMessage("Description must be a string"),
 
-            body("logo")
-                .optional()
-                .isString().withMessage("Logo must be a string"),
+            body("logo").custom((value, { req }) => {
+                if (req.files && req.files.logo) {
+                    const file = req.files.logo[0];
+                    const filetypes = /jpeg|jpg|png/;
+                    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+                    if (!extname) {
+                        throw new Error("Logo must be an image (jpeg, jpg, or png)");
+                    }
+                }
+                return true;
+            }),
 
-            body("cover_image")
-                .optional()
-                .isString().withMessage("Cover image must be a string"),
+            body("cover_image").custom((value, { req }) => {
+                if (req.files && req.files.cover_image) {
+                    const file = req.files.cover_image[0];
+                    const filetypes = /jpeg|jpg|png/;
+                    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+                    if (!extname) {
+                        throw new Error("Cover image must be an image (jpeg, jpg, or png)");
+                    }
+                }
+                return true;
+            }),
 
             body("rating")
                 .optional()
@@ -48,13 +65,14 @@ class RestaurantValidator extends BaseValidator {
                 .optional()
                 .isString().withMessage("Description must be a string"),
 
-            body("logo")
-                .optional()
-                .isString().withMessage("Logo must be a string"),
-
-            body("cover_image")
-                .optional()
-                .isString().withMessage("Cover image must be a string"),
+            body("logo").custom((value, { req }) => {
+                if (req.files && req.files.logo) {
+                    const filetypes = /jpeg|jpg|png/;
+                    const extname = filetypes.test(path.extname(req.files.logo[0].originalname).toLowerCase());
+                    if (!extname) throw new Error("Logo must be an image");
+                }
+                return true;
+            }),
 
             body("rating")
                 .optional()

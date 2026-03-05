@@ -1,3 +1,4 @@
+const fs = require("fs");
 const Restaurant = require("../models/Restaurant");
 const Jsend = require("../utils/Jsend");
 const Constants = require("../utils/Constants");
@@ -60,8 +61,8 @@ const addRestaurant = async function (req, res, next) {
         const restaurant = new Restaurant({
             name: req.body.name,
             description: req.body.description,
-            logo: req.body.logo,
-            cover_image: req.body.cover_image,
+            logo: req.files && req.files["logo"] ? req.files["logo"][0].path : "",
+            cover_image: req.files && req.files["cover_image"] ? req.files["cover_image"][0].path : "",
             rating: req.body.rating,
             delivery_time: req.body.delivery_time,
             is_open: req.body.is_open,
@@ -96,8 +97,6 @@ const updateRestaurant = async function (req, res, next) {
         const allowedFields = [
             "name",
             "description",
-            "logo",
-            "cover_image",
             "rating",
             "delivery_time",
             "is_open"
@@ -108,6 +107,26 @@ const updateRestaurant = async function (req, res, next) {
                 restaurant[field] = req.body[field];
             }
         });
+
+        // Handle logo upload
+        if (req.files && req.files["logo"]) {
+            if (restaurant.logo) {
+                fs.unlink(restaurant.logo, (err) => {
+                    if (err) console.error("Failed to delete old logo:", err.message);
+                });
+            }
+            restaurant.logo = req.files["logo"][0].path;
+        }
+
+        // Handle cover_image upload
+        if (req.files && req.files["cover_image"]) {
+            if (restaurant.cover_image) {
+                fs.unlink(restaurant.cover_image, (err) => {
+                    if (err) console.error("Failed to delete old cover_image:", err.message);
+                });
+            }
+            restaurant.cover_image = req.files["cover_image"][0].path;
+        }
 
         await restaurant.save();
 
