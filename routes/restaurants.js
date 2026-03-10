@@ -5,7 +5,7 @@ const AuthMiddleware = require("../middlewares/AuthMiddleware");
 const IsAdmin = require("../middlewares/IsAdmin");
 const RestaurantController = require("../controllers/RestaurantController");
 const RestaurantValidator = require("../middlewares/validators/RestaurantValidator");
-const uploadRestaurant = require("../middlewares/uploadRestaurant");
+const uploadRestaurant = require("../middlewares/upload");
 
 
 router.get(

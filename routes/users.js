@@ -7,7 +7,7 @@ const IsAdmin = require("../middlewares/IsAdmin");
 const UserController = require("../controllers/UserController");
 const UserValidator = require("../middlewares/validators/UserValidator");
 
-const uploadAvatar = require("../middlewares/uploadAvatar");
+const uploadAvatar = require("../middlewares/upload");
 const isAdmin = require("../middlewares/IsAdmin");
 
 // logged user

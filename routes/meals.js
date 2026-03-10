@@ -5,7 +5,7 @@ const AuthMiddleware = require("../middlewares/AuthMiddleware");
 const IsAdmin = require("../middlewares/IsAdmin");
 const MealController = require("../controllers/MealController");
 const MealValidator = require("../middlewares/validators/MealValidator");
-const uploadMeal = require("../middlewares/uploadMeal");
+const uploadMeal = require("../middlewares/upload");
 
 
 router.get(
@@ -37,7 +37,7 @@ router.patch(
   "/:id",
   AuthMiddleware,
   IsAdmin,
-  uploadMeal.single("image"),
+  uploadMeal.single("meal_image"),
   MealValidator.updateMeal(),
   MealController.updateMeal
 );
