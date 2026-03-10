@@ -5,7 +5,7 @@ const AuthMiddleware = require("../middlewares/AuthMiddleware");
 const IsAdmin = require("../middlewares/IsAdmin");
 const RestaurantController = require("../controllers/RestaurantController");
 const RestaurantValidator = require("../middlewares/validators/RestaurantValidator");
-const uploadRestaurant = require("../middlewares/upload");
+const upload = require("../middlewares/upload");
 
 
 router.get(
@@ -27,7 +27,7 @@ router.post(
   "/",
   AuthMiddleware,
   IsAdmin,
-  uploadRestaurant.fields([{ name: "logo", maxCount: 1 }, { name: "cover_image", maxCount: 1 }]),
+  upload.fields([{ name: "logo", maxCount: 1 }, { name: "cover_image", maxCount: 1 }]),
   RestaurantValidator.addRestaurant(),
   RestaurantController.addRestaurant
 );
@@ -37,7 +37,7 @@ router.patch(
   "/:id",
   AuthMiddleware,
   IsAdmin,
-  uploadRestaurant.fields([{ name: "logo", maxCount: 1 }, { name: "cover_image", maxCount: 1 }]),
+  upload.fields([{ name: "logo", maxCount: 1 }, { name: "cover_image", maxCount: 1 }]),
   RestaurantValidator.updateRestaurant(),
   RestaurantController.updateRestaurant
 );

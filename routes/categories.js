@@ -5,7 +5,7 @@ const AuthMiddleware = require("../middlewares/AuthMiddleware");
 const IsAdmin = require("../middlewares/IsAdmin");
 const CategoryController = require("../controllers/CategoryController");
 const CategoryValidator = require("../middlewares/validators/CategoryValidator");
-const uploadCategory = require("../middlewares/upload");
+const upload = require("../middlewares/upload");
 
 router.get(
   "/",
@@ -18,7 +18,7 @@ router.post(
   "/",
   AuthMiddleware,
   IsAdmin,
-  uploadCategory.single("category_image"),
+  upload.single("category_image"),
   CategoryValidator.addCategory(),
   CategoryController.addCategory,
 );
@@ -34,7 +34,7 @@ router.put(
   "/:id",
   AuthMiddleware,
   IsAdmin,
-  uploadCategory.single("image"),
+  upload.single("category_image"),
   CategoryValidator.updateCategory(),
   CategoryController.updateCategory,
 );

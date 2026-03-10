@@ -3,12 +3,11 @@ var router = express.Router();
 
 const AuthMiddleware = require("../middlewares/AuthMiddleware");
 const IsAdmin = require("../middlewares/IsAdmin");
-
 const UserController = require("../controllers/UserController");
 const UserValidator = require("../middlewares/validators/UserValidator");
+const upload = require("../middlewares/upload");
 
-const uploadAvatar = require("../middlewares/upload");
-const isAdmin = require("../middlewares/IsAdmin");
+
 
 // logged user
 router.get("/me", AuthMiddleware, UserController.getProfile);
@@ -30,7 +29,7 @@ router.patch(
 router.patch(
   "/me/avatar",
   AuthMiddleware,
-  uploadAvatar.single("avatar"),
+  upload.single("avatar"),
   UserValidator.updateAvatar(),
   UserController.updateAvatar,
 );
