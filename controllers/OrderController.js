@@ -60,7 +60,11 @@ const placeOrder = async function (req, res, next) {
 
 const trackOrder = async function (req, res, next) {
   try {
-    const order = await Order.findById(req.params.id);
+
+    const order = await Order.findById(req.params.id)
+      .populate("user_id", "name email phone")
+      .populate("driver_id", "name phone")
+      .populate("address_id");
 
     if (!order) {
       return res.status(Constants.STATUSCODE.NOT_FOUND).json(
@@ -70,11 +74,17 @@ const trackOrder = async function (req, res, next) {
       );
     }
 
+    const items = await OrderItem
+      .find({ order_id: order._id })
+      .populate("meal_id", "name price image");
+
     return res.status(Constants.STATUSCODE.SUCCESS).json(
       Jsend.success({
         order,
+        items
       }),
     );
+
   } catch (error) {
     next(error);
   }
@@ -83,19 +93,35 @@ const trackOrder = async function (req, res, next) {
 
 const getOrders = async function (req, res, next) {
   try {
+
     const { page, limit, skip } = paginate(req);
 
     const orders = await Order.find()
       .populate("user_id", "name email phone")
       .populate("driver_id", "name phone")
+      .populate("address_id")
       .skip(skip)
       .limit(limit);
 
     const countDocs = await Order.countDocuments();
 
+    const ordersWithItems = [];
+
+    for (const order of orders) {
+
+      const items = await OrderItem
+        .find({ order_id: order._id })
+        .populate("meal_id", "name price image");
+
+      ordersWithItems.push({
+        order,
+        items
+      });
+    }
+
     return res.status(Constants.STATUSCODE.SUCCESS).json(
       Jsend.success({
-        orders,
+        orders: ordersWithItems,
         pagination: {
           total: countDocs,
           page,
@@ -104,6 +130,7 @@ const getOrders = async function (req, res, next) {
         },
       }),
     );
+
   } catch (error) {
     next(error);
   }

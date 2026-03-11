@@ -21,7 +21,7 @@ router.post(
 router.get(
   "/:id",
   AuthMiddleware,
-  OrderValidator.getOrder(),
+  OrderValidator.trackOrder(),
   OrderController.trackOrder
 );
 
@@ -31,6 +31,7 @@ router.get(
   "/",
   AuthMiddleware,
   IsAdmin,
+  OrderValidator.getOrders(),
   OrderController.getOrders
 );
 
