@@ -2,7 +2,9 @@ const fs = require("fs");
 const Restaurant = require("../models/Restaurant");
 const Jsend = require("../utils/Jsend");
 const Constants = require("../utils/Constants");
+const deleteFile = require("../utils/File");
 const { paginate } = require("../utils/Helpers");
+const path = require("path");
 
 
 const browseRestaurants = async function (req, res, next) {
@@ -58,11 +60,16 @@ const getRestaurant = async function (req, res, next) {
 
 const addRestaurant = async function (req, res, next) {
     try {
+
         const restaurant = new Restaurant({
             name: req.body.name,
             description: req.body.description,
-            logo: req.files && req.files["logo"] ? req.files["logo"][0].path : "",
-            cover_image: req.files && req.files["cover_image"] ? req.files["cover_image"][0].path : "",
+            logo: req.files && req.files["logo"]
+                ? req.files["logo"][0].filename
+                : null,
+            cover_image: req.files && req.files["cover_image"]
+                ? req.files["cover_image"][0].filename
+                : null,
             rating: req.body.rating,
             delivery_time: req.body.delivery_time,
             is_open: req.body.is_open,
@@ -73,7 +80,15 @@ const addRestaurant = async function (req, res, next) {
         return res.status(Constants.STATUSCODE.CREATED).json(
             Jsend.success({
                 message: "Restaurant created",
-                restaurant
+                restaurant: {
+                    ...restaurant._doc,
+                    logo: restaurant.logo
+                        ? `/uploads/restaurants/logos/${restaurant.logo}`
+                        : null,
+                    cover_image: restaurant.cover_image
+                        ? `/uploads/restaurants/covers/${restaurant.cover_image}`
+                        : null
+                }
             })
         );
 
@@ -81,7 +96,6 @@ const addRestaurant = async function (req, res, next) {
         next(error);
     }
 };
-
 
 
 const updateRestaurant = async function (req, res, next) {
@@ -99,7 +113,7 @@ const updateRestaurant = async function (req, res, next) {
             "description",
             "rating",
             "delivery_time",
-            "is_open"
+            "is_open",
         ];
 
         allowedFields.forEach(field => {
@@ -108,24 +122,38 @@ const updateRestaurant = async function (req, res, next) {
             }
         });
 
-        // Handle logo upload
+        // ===== update logo =====
         if (req.files && req.files["logo"]) {
+
             if (restaurant.logo) {
-                fs.unlink(restaurant.logo, (err) => {
-                    if (err) console.error("Failed to delete old logo:", err.message);
-                });
+                const oldLogoPath = path.join(
+                    "uploads",
+                    "restaurants",
+                    "logos",
+                    restaurant.logo
+                );
+
+                deleteFile(oldLogoPath);
             }
-            restaurant.logo = req.files["logo"][0].path;
+
+            restaurant.logo = req.files["logo"][0].filename;
         }
 
-        // Handle cover_image upload
+        // ===== update cover image =====
         if (req.files && req.files["cover_image"]) {
+
             if (restaurant.cover_image) {
-                fs.unlink(restaurant.cover_image, (err) => {
-                    if (err) console.error("Failed to delete old cover_image:", err.message);
-                });
+                const oldCoverPath = path.join(
+                    "uploads",
+                    "restaurants",
+                    "covers",
+                    restaurant.cover_image
+                );
+
+                deleteFile(oldCoverPath);
             }
-            restaurant.cover_image = req.files["cover_image"][0].path;
+
+            restaurant.cover_image = req.files["cover_image"][0].filename;
         }
 
         await restaurant.save();
@@ -133,7 +161,15 @@ const updateRestaurant = async function (req, res, next) {
         return res.status(Constants.STATUSCODE.SUCCESS).json(
             Jsend.success({
                 message: "Restaurant updated",
-                restaurant
+                restaurant: {
+                    ...restaurant._doc,
+                    logo: restaurant.logo
+                        ? `/uploads/restaurants/logos/${restaurant.logo}`
+                        : null,
+                    cover_image: restaurant.cover_image
+                        ? `/uploads/restaurants/covers/${restaurant.cover_image}`
+                        : null
+                }
             })
         );
 

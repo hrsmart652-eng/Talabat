@@ -5,6 +5,7 @@ const Category = require("../models/Category");
 const Jsend = require("../utils/Jsend");
 const Constants = require("../utils/Constants");
 const { paginate } = require("../utils/Helpers");
+const deleteFile = require("../utils/File");
 
 
 const browseMeals = async function (req, res, next) {
@@ -154,11 +155,9 @@ const updateMeal = async function (req, res, next) {
         // Handle image upload
         if (req.file) {
             if (meal.image) {
-                fs.unlink(meal.image, (err) => {
-                    if (err) console.error("Failed to delete old meal image:", err.message);
-                });
+                deleteFile(meal.image); // delete old image
             }
-            meal.image = req.file.path;
+            meal.image = req.file.path; // save new image
         }
 
         await meal.save();
@@ -176,9 +175,9 @@ const updateMeal = async function (req, res, next) {
 };
 
 
-
 const deleteMeal = async function (req, res, next) {
     try {
+
         const meal = await Meal.findById(req.params.id);
 
         if (!meal) {
@@ -187,11 +186,9 @@ const deleteMeal = async function (req, res, next) {
             );
         }
 
-        // Delete the image file if it exists
+        // delete meal image
         if (meal.image) {
-            fs.unlink(meal.image, (err) => {
-                if (err) console.error("Failed to delete meal image:", err.message);
-            });
+            deleteFile(meal.image);
         }
 
         await Meal.findByIdAndDelete(req.params.id);
@@ -206,7 +203,6 @@ const deleteMeal = async function (req, res, next) {
         next(error);
     }
 };
-
 
 
 const toggleAvailability = async function (req, res, next) {

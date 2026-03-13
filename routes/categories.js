@@ -5,24 +5,46 @@ const AuthMiddleware = require("../middlewares/AuthMiddleware");
 const IsAdmin = require("../middlewares/IsAdmin");
 const CategoryController = require("../controllers/CategoryController");
 const CategoryValidator = require("../middlewares/validators/CategoryValidator");
-const uploadCategory = require("../middlewares/uploadCategory");
-
+const upload = require("../middlewares/upload");
 
 router.get(
   "/",
   AuthMiddleware,
   CategoryValidator.get(),
-  CategoryController.browseCategories
+  CategoryController.browseCategories,
 );
 
 router.post(
   "/",
   AuthMiddleware,
   IsAdmin,
-  uploadCategory.single("image"),
+  upload.single("category_image"),
   CategoryValidator.addCategory(),
-  CategoryController.addCategory
+  CategoryController.addCategory,
 );
 
+router.get(
+  "/:id", 
+  AuthMiddleware,
+  CategoryValidator.getCategory(), 
+  CategoryController.getCategory
+);
+
+router.put(
+  "/:id",
+  AuthMiddleware,
+  IsAdmin,
+  upload.single("category_image"),
+  CategoryValidator.updateCategory(),
+  CategoryController.updateCategory,
+);
+
+router.delete(
+  "/:id", 
+  AuthMiddleware,
+  IsAdmin,
+  CategoryValidator.deleteCategory(), 
+  CategoryController.deleteCategory
+);
 
 module.exports = router;

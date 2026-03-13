@@ -98,6 +98,30 @@ class UserValidator extends BaseValidator {
         ]);
     }
 
+    // ==============================
+    // NEW VALIDATORS
+    // ==============================
+
+    static getUserById() {
+        return this.withValidation([
+            param("id")
+                .notEmpty()
+                .withMessage("User ID is required")
+                .isMongoId()
+                .withMessage("Invalid user ID"),
+        ]);
+    }
+
+    static deleteUser() {
+        return this.withValidation([
+            param("id")
+                .notEmpty()
+                .withMessage("User ID is required")
+                .isMongoId()
+                .withMessage("Invalid user ID"),
+        ]);
+    }
+
 }
 
 module.exports = UserValidator;

@@ -6,25 +6,20 @@ const IsAdmin = require("../middlewares/IsAdmin");
 const DriverController = require("../controllers/DriverController");
 const DriverValidator = require("../middlewares/validators/DriverValidator");
 
-
-router.get(
-  "/me",
-  AuthMiddleware,
-  DriverController.getMyDriverProfile
-);
+router.get("/me", AuthMiddleware, DriverController.getMyDriverProfile);
 
 router.post(
   "/",
   AuthMiddleware,
   DriverValidator.createDriverProfile(),
-  DriverController.createDriverProfile
+  DriverController.createDriverProfile,
 );
 
 router.patch(
   "/me",
   AuthMiddleware,
   DriverValidator.updateDriverProfile(),
-  DriverController.updateDriverProfile
+  DriverController.updateDriverProfile,
 );
 
 router.get(
@@ -32,7 +27,21 @@ router.get(
   AuthMiddleware,
   IsAdmin,
   DriverValidator.get(),
-  DriverController.getDrivers
+  DriverController.getDrivers,
+);
+
+router.patch(
+  "/availability",
+  AuthMiddleware,
+  DriverValidator.setAvailability(),
+  DriverController.setAvailability,
+);
+
+router.patch(
+  "/location",
+  AuthMiddleware,
+  DriverValidator.updateLocation(),
+  DriverController.updateLocation,
 );
 
 module.exports = router;
