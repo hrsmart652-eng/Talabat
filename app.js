@@ -1,7 +1,4 @@
-require('dotenv').config();
-
 var express = require("express");
-var path = require("path");
 var ErrorHandler = require("./middlewares/ErrorHandler");
 
 var authRouter = require("./routes/auth"); 
@@ -33,11 +30,4 @@ app.use(ErrorHandler);
 
 module.exports = app;
 
-const PORT = process.env.PORT || 4000;
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
-
-const connectDB = require("./config/db");
-connectDB();
